@@ -1,0 +1,8 @@
+ipykernel
+pandas
+fastapi
+uvicorn
+pydantic
+streamlit
+plotly
+groq

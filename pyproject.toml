@@ -1,0 +1,16 @@
+[project]
+name = "streamlit-ui-chatbot-user-management"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.137.1",
+    "groq>=1.4.0",
+    "ipykernel>=7.3.0",
+    "pandas>=3.0.3",
+    "plotly>=6.8.0",
+    "pydantic[email]>=2.13.4",
+    "streamlit>=1.58.0",
+    "uvicorn>=0.49.0",
+]
