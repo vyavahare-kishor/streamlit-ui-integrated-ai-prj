@@ -19,20 +19,20 @@ Tab 2 → AI Chatbot         → Character-based chat powered by Groq/LLaMA
 Tab 3 → Document Analyser  → Upload a PDF, ask questions, RAG-grounded answers
 ```
 
-Tabs 1 and 2 talk to this repo's own FastAPI backend (`app.py`). Tab 3 talks to a **separate** FastAPI service — [ai-document-analyser](https://github.com/yourusername/ai-document-analyser) — running on its own port. This is intentional microservice separation, not a shortcut.
+Tabs 1 and 2 talk to this repo's own FastAPI backend (`app.py`). Tab 3 talks to a **separate** FastAPI service — [ai-document-analyser](https://github.com/vyavahare-kishor/ai-document-analyser) — running on its own port. This is intentional microservice separation, not a shortcut.
 
 ---
 
 ## 📸 Screenshots
 
 **User Management**
-<!-- ![User Management Tab](screenshots/user-management.png) -->
+![User Management Tab](screenshots/user_management.png)
 
 **AI Chatbot**
-<!-- ![Chatbot Tab](screenshots/chatbot.png) -->
+![Chatbot Tab](screenshots/ai_chatbot.png)
 
 **Document Analyser**
-<!-- ![Document Analyser Tab](screenshots/document-analyser.png) -->
+![Document Analyser Tab](screenshots/ai_document_analyser.png)
 
 ---
 
@@ -68,7 +68,7 @@ streamlit-ui-integrated-ai-prj/
 ### Install
 
 ```bash
-git clone https://github.com/yourusername/streamlit-ui-integrated-ai-prj
+git clone https://github.com/vyavahare-kishor/streamlit-ui-integrated-ai-prj
 cd streamlit-ui-integrated-ai-prj
 pip install -r requirements.txt
 ```
@@ -95,11 +95,11 @@ Open the Streamlit URL it prints (usually `http://localhost:8501`).
 
 | Project | Description |
 |---------|-------------|
-| [**ai-native-journey**](https://github.com/yourusername/ai-native-journey) | FastAPI foundation — REST API + AI chat + SSE streaming |
-| [**ai-pr-reviewer**](https://github.com/yourusername/ai-pr-reviewer) | AI-powered GitHub PR code reviewer |
-| [**ai-customer-support-bot**](https://github.com/yourusername/ai-customer-support-bot) | RAG pipeline with pgvector |
-| [**ai-research-agent**](https://github.com/yourusername/ai-research-agent) | Autonomous ReAct agent — LangGraph |
-| [**ai-document-analyser**](https://github.com/yourusername/ai-document-analyser) | Conversational PDF analysis (used by this repo's Tab 3) |
+| [**ai-native-journey**](https://github.com/vyavahare-kishor/ai-native-journey) | FastAPI foundation — REST API + AI chat + SSE streaming |
+| [**ai-pr-reviewer**](https://github.com/vyavahare-kishor/pr-code-reviewer) | AI-powered GitHub PR code reviewer |
+| [**ai-customer-support-bot**](https://github.com/vyavahare-kishor/ai-customer-support-bot) | RAG pipeline with pgvector |
+| [**ai-research-agent**](https://github.com/vyavahare-kishor/ai-research-agent) | Autonomous ReAct agent — LangGraph |
+| [**ai-document-analyser**](https://github.com/vyavahare-kishor/ai-document-analyser) | Conversational PDF analysis (used by this repo's Tab 3) |
 | **streamlit-ui-integrated-ai-prj** (this) | Unified frontend across all backend services |
 
 ---
@@ -111,7 +111,7 @@ Senior Software Engineer → AI Native Engineer
 11+ years backend engineering (Ruby on Rails, PostgreSQL, AWS). Now building production AI systems.
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=flat-square&logo=linkedin)](https://linkedin.com/in/vyavahare-kishor)
-[![GitHub](https://img.shields.io/badge/GitHub-Follow-black?style=flat-square&logo=github)](https://github.com/yourusername)
+[![GitHub](https://img.shields.io/badge/GitHub-Follow-black?style=flat-square&logo=github)](https://github.com/vyavahare-kishor)
 
 ---
 
