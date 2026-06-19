@@ -5,6 +5,7 @@
 
 import streamlit as st
 import requests
+import json
 
 # Set page configuration
 st.set_page_config(
@@ -28,9 +29,10 @@ def show_response(resp):
     except Exception:
         st.text_area("Raw response (text)", str(resp), height=200)
 
+# tab1, tab2, tab3, tab4 = st.tabs(["User Management", "Chatbot", "Document Analyser", "Analyst Crew"])
 
 # Main UI tabs
-tab1, tab2, tab3 = st.tabs(["User Management", "Chatbot", "Document Analyser"])
+tab1, tab2, tab3, tab4 = st.tabs(["User Management", "Chatbot", "Document Analyser", "Analyst Crew"])
 
 with tab1:
     st.header("User Management")
@@ -277,6 +279,74 @@ with tab3:
             st.rerun()
     else:
         st.warning("👆 Upload a PDF above to start asking questions.")
+
+
+with tab4:
+    st.header("AI Analyst Crew")
+    st.caption("3 CrewAI agents — Researcher, Analyst, Writer — working sequentially.")
+
+    CREW_BASE_URL = st.text_input("Analyst Crew API URL", value="http://localhost:8002", key="crew_base_url")
+    company = st.text_input("Company name", key="crew_company")
+    focus = st.text_input("Focus area (optional)", key="crew_focus")
+
+    if st.button("Run Analysis", key="run_crew_btn"):
+        agent_status = {
+            "Research Analyst": "⏳ waiting",
+            "Market Analyst": "⏳ waiting",
+            "Senior Business Writer": "⏳ waiting"
+        }
+        status_placeholder = st.empty()
+        log_box = st.container(height=250)
+        result = {}
+
+        def render_status():
+            status_placeholder.code(
+                "\n".join(f"{a}: {s}" for a, s in agent_status.items())
+            )
+
+        render_status()
+
+        try:
+            payload = {"company": company, "focus": focus or None}
+            with requests.post(f"{CREW_BASE_URL}/analysis/stream", json=payload, stream=True, timeout=180) as resp:
+                for line in resp.iter_lines():
+                    if not line:
+                        continue
+                    decoded = line.decode("utf-8")
+                    if not decoded.startswith("data: "):
+                        continue
+                    data_str = decoded[len("data: "):]
+                    if data_str == "[DONE]":
+                        break
+
+                    event = json.loads(data_str)
+
+                    if event["event"] == "agent_start":
+                        agent_status[event["agent"]] = "🔵 working..."
+                        render_status()
+                        with log_box:
+                            st.write(f"🔵 **{event['agent']}** started")
+                    elif event["event"] == "task_done":
+                        agent_status[event["agent"]] = "✅ done"
+                        render_status()
+                        with log_box:
+                            st.write(f"✅ **{event['agent']}** finished")
+                            st.caption(event["preview"])
+                    elif event["event"] == "error":
+                        st.error(event["message"])
+                    elif event["event"] == "result":
+                        result.update(event)
+
+        except requests.RequestException as e:
+            st.error(f"Request failed: {e}")
+
+        if result:
+            st.subheader("Final Report")
+            st.markdown(result.get("final_report", ""))
+            with st.expander("Research Notes"):
+                st.write(result.get("research_notes", ""))
+            with st.expander("SWOT Analysis"):
+                st.write(result.get("analysis", ""))
 
 
 # Footer
