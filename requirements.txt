@@ -6,3 +6,7 @@ pydantic
 streamlit
 plotly
 groq
+pymupdf
+faiss-cpu
+lancedb
+mistralai
