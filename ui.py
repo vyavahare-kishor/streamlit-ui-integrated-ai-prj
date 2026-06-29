@@ -8,6 +8,7 @@ import streamlit as st
 import requests
 import json
 import vector_search
+import roundtable
 import time
 from pathlib import Path
 
@@ -53,6 +54,12 @@ NAV_ITEMS = {
         "description": "Compare semantic, keyword, and hybrid search across two vector database engines.",
         "stack": "FAISS · LanceDB · Mistral Embeddings — runs in-process, no separate API",
         "does": "Search a pre-indexed document set and inspect relevance scores and source citations."
+    },
+    "Agent Roundtable": {
+        "icon": "🗣️",
+        "description": "Technology decision debates with live multi-agent streaming.",
+        "stack": "FastAPI (separate service) · Microsoft AutoGen · Groq",
+        "does": "Advocate, Skeptic, and Moderator agents debate in a shared group chat and deliver a balanced recommendation."
     },
 }
 
@@ -311,6 +318,14 @@ elif selected == "Analyst Crew":
 elif selected == "Vector DB Search":
     vector_search.render()
 
+
+# ── Section: Agent Roundtable ───────────────────────────────────────────
+elif selected == "Agent Roundtable":
+    roundtable.render()
+
 # ── Footer ─────────────────────────────────────────────────────────────────
 st.markdown("---")
-st.caption("Integrated AI Applications — User Management · Chatbot · Document Analyser · Analyst Crew · Vector DB Search")
+st.caption(
+    "Integrated AI Applications — User Management · Chatbot · Document Analyser · "
+    "Analyst Crew · Vector DB Search · Agent Roundtable"
+)

@@ -1,11 +1,12 @@
 # 🧩 Streamlit Integrated AI Applications
 
-> A single Streamlit interface unifying five independent AI/backend services — User Management, AI Chatbot, AI Document Analyser (RAG), a CrewAI Multi-Agent Analyst Crew, and a Vector Database Search Engine — most running as their own FastAPI microservice.
+> A single Streamlit interface unifying six independent AI/backend services — User Management, AI Chatbot, AI Document Analyser (RAG), a CrewAI Multi-Agent Analyst Crew, a Vector Database Search Engine, and an AutoGen Agent Roundtable — most running as their own FastAPI microservice.
 
 ![Python](https://img.shields.io/badge/Python-3.11+-blue?style=flat-square&logo=python)
 ![Streamlit](https://img.shields.io/badge/Streamlit-UI-red?style=flat-square&logo=streamlit)
 ![FastAPI](https://img.shields.io/badge/FastAPI-backend-green?style=flat-square&logo=fastapi)
 ![CrewAI](https://img.shields.io/badge/Multi--Agent-CrewAI-6A0DAD?style=flat-square)
+![AutoGen](https://img.shields.io/badge/Multi--Agent-AutoGen-0078D4?style=flat-square)
 ![Groq](https://img.shields.io/badge/LLM-Groq%20%7C%20LLaMA-orange?style=flat-square)
 ![Mistral](https://img.shields.io/badge/Embeddings-Mistral-FF7000?style=flat-square)
 ![FAISS](https://img.shields.io/badge/VectorDB-FAISS%20%7C%20LanceDB-00599C?style=flat-square)
@@ -22,11 +23,12 @@ Section 2 → AI Chatbot         → Character-based chat — Groq/LLaMA
 Section 3 → Document Analyser  → Upload a PDF, RAG-grounded Q&A — separate FastAPI service
 Section 4 → Analyst Crew       → CrewAI multi-agent report generation — separate FastAPI service
 Section 5 → Vector DB Search   → Build + query FAISS and LanceDB indexes — runs in-process
+Section 6 → Agent Roundtable   → AutoGen multi-agent technology debates — separate FastAPI service
 ```
 
 Navigation is a **sidebar radio**, not tabs — Streamlit's `st.tabs()` has no click event, so a radio list is used instead, with an info card above the content showing each section's description, stack, and purpose the moment it's selected.
 
-Sections 1 and 2 talk to this repo's own backend (`app.py`). Sections 3 and 4 talk to **separate** FastAPI services — [ai-document-analyser](https://github.com/vyavahare-kishor/ai-document-analyser) and [ai-analyst-crew](https://github.com/vyavahare-kishor/ai-analyst-crew) — each on its own port. Section 5 runs FAISS/LanceDB **directly inside Streamlit**, no API call at all. This mix is intentional — it demonstrates both microservice and in-process architecture patterns in one project.
+Sections 1 and 2 talk to this repo's own backend (`app.py`). Sections 3, 4, and 6 talk to **separate** FastAPI services — [ai-document-analyser](https://github.com/vyavahare-kishor/ai-document-analyser), [ai-analyst-crew](https://github.com/vyavahare-kishor/ai-analyst-crew), and [ai-roundtable](https://github.com/vyavahare-kishor/ai-roundtable) — each on its own port. Section 5 runs FAISS/LanceDB **directly inside Streamlit**, no API call at all. This mix is intentional — it demonstrates both microservice and in-process architecture patterns in one project.
 
 ---
 
@@ -52,15 +54,20 @@ Finds results by meaning — a query like "how does the system learn from data" 
 ![Hybrid Search](screenshots/vector_search_hybrid.png)
 Blends keyword matching with semantic similarity using adjustable weights — useful when exact terminology matters as much as meaning.
 
+**Agent Roundtable — live multi-agent debate**
+![Agent Roundtable](screenshots/agent_roundtable.png)
+Three AutoGen agents (Advocate, Skeptic, Moderator) debate a technology decision with a live streamed transcript and a final recommendation.
+
 ---
 
 ## ✨ Features
 
-- Single Streamlit UI across five independent AI services and frameworks
+- Single Streamlit UI across six independent AI services and frameworks
 - User CRUD — list, fetch, update, create users via a token-authenticated API
 - Character-based chatbot — switch personas (Techie, Philosopher, Kid, Friend, Politician)
 - PDF upload, RAG-grounded Q&A with page-level citations and conversation memory
 - Multi-agent competitive analysis (CrewAI) with **live streamed progress** per agent
+- Technology decision debates (AutoGen) with **live streamed transcript** per agent and JSON export
 - Upload-your-own-documents vector search — builds FAISS and LanceDB indexes from PDFs/TXT on the fly
 - Three search modes — Semantic, Keyword, and Hybrid (with adjustable weighting)
 - Scrollable, auto-updating chat views using Streamlit's fixed-height container pattern
@@ -75,8 +82,9 @@ streamlit-ui-integrated-ai-prj/
 ├── app.py                 # FastAPI backend — user management + chatbot (port 8000)
 ├── user_management.py      # User CRUD logic
 ├── chatbot.py               # Chatbot logic
-├── ui.py                    # Streamlit frontend — sidebar nav + 4 sections inline
+├── ui.py                    # Streamlit frontend — sidebar nav + section dispatch
 ├── vector_search.py         # Vector DB Search section — isolated for traceability
+├── roundtable.py            # Agent Roundtable section — live SSE debate transcript
 ├── requirements.txt
 ├── user_db.csv
 ├── vector_dbs/               # FAISS index + LanceDB table (generated, not committed)
@@ -84,7 +92,7 @@ streamlit-ui-integrated-ai-prj/
 └── README.md
 ```
 
-`vector_search.py` is deliberately separated from `ui.py` — it owns the full upload → chunk → embed → index → search pipeline for FAISS and LanceDB, and is imported into the sidebar dispatch with a single `vector_search.render()` call.
+`vector_search.py` and `roundtable.py` are deliberately separated from `ui.py` — each owns its section logic and is imported into the sidebar dispatch with a single `render()` call.
 
 ---
 
@@ -120,11 +128,14 @@ cd ../ai-document-analyser && uvicorn main:app --reload --port 8001
 # Terminal 3 — ai-analyst-crew (separate repo)
 cd ../ai-analyst-crew && uvicorn main:app --reload --port 8002
 
-# Terminal 4 — Streamlit UI
+# Terminal 4 — ai-roundtable (separate repo)
+cd ../ai-roundtable && uvicorn main:app --reload --port 8005
+
+# Terminal 5 — Streamlit UI
 streamlit run ui.py
 ```
 
-Open the Streamlit URL it prints (usually `http://localhost:8501`). Vector DB Search works standalone — it needs only a Mistral API key, no extra service to run.
+Open the Streamlit URL it prints (usually `http://localhost:8501`). Vector DB Search works standalone — it needs only a Mistral API key, no extra service to run. Agent Roundtable needs the `ai-roundtable` API on port 8005.
 
 ---
 
@@ -150,6 +161,7 @@ This repo is one piece of a larger, continuously updated portfolio. The full jou
 | [**ai-research-agent**](https://github.com/vyavahare-kishor/ai-research-agent) | Autonomous single-agent ReAct reasoning — LangGraph |
 | [**ai-document-analyser**](https://github.com/vyavahare-kishor/ai-document-analyser) | Conversational PDF analysis (used by this repo's Document Analyser section) |
 | [**ai-analyst-crew**](https://github.com/vyavahare-kishor/ai-analyst-crew) | Multi-agent collaboration — CrewAI (used by this repo's Analyst Crew section) |
+| [**ai-roundtable**](https://github.com/vyavahare-kishor/ai-roundtable) | Technology decision debates — AutoGen (used by this repo's Agent Roundtable section) |
 | **streamlit-ui-integrated-ai-prj** (this) | Unified frontend across all backend services, plus an in-process vector search engine |
 
 ---
