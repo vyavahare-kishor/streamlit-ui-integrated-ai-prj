@@ -9,6 +9,7 @@ import requests
 import json
 import vector_search
 import roundtable
+import research_agent
 import time
 from pathlib import Path
 
@@ -60,6 +61,12 @@ NAV_ITEMS = {
         "description": "Technology decision debates with live multi-agent streaming.",
         "stack": "FastAPI (separate service) · Microsoft AutoGen · Groq",
         "does": "Advocate, Skeptic, and Moderator agents debate in a shared group chat and deliver a balanced recommendation."
+    },
+    "Research Agent": {
+        "icon": "🧭",
+        "description": "Single autonomous agent that decides its own research steps.",
+        "stack": "FastAPI (separate service) · LangGraph · ReAct · Tavily",
+        "does": "Give it a topic — the agent searches the web autonomously and returns a structured report with sources."
     },
 }
 
@@ -322,6 +329,10 @@ elif selected == "Vector DB Search":
 # ── Section: Agent Roundtable ───────────────────────────────────────────
 elif selected == "Agent Roundtable":
     roundtable.render()
+
+# ── Section: Research Agent ───────────────────────────────────────────────
+elif selected == "Research Agent":
+    research_agent.render()
 
 # ── Footer ─────────────────────────────────────────────────────────────────
 st.markdown("---")
